@@ -1,4 +1,3 @@
 Near
 Moderate
 Far
-nan
