@@ -1,0 +1,4 @@
+Near
+Moderate
+Far
+nan
