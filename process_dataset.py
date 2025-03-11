@@ -1,4 +1,5 @@
 import pandas as pd 
+from sklearn.preprocessing import LabelEncoder
 
 
 
@@ -18,6 +19,14 @@ def clean_drop(dt):
     dt['Hours_Studied'] = pd.to_numeric(dt['Hours_Studied'], errors='coerce')
     dt = dt.dropna(subset=['Hours_Studied'])
 
+     #convert catagories  to numerical values 
+    lable_encoders = {}
+    for col in dt.select_dtypes(include=['object']).columns:
+        le = LabelEncoder()
+        if dt[col].dtype == 'object':
+            dt[col] = LabelEncoder().fit_transform(dt[col])
+            lable_encoders[col] = le #stores encoder for consistency 
+
 #removes rows where any column contains empty spaces
     dt = dt[~dt.isin(['[]']).any(axis=1)]
     #The dataset is equal to itself, but not rows that have blanks.
@@ -29,7 +38,6 @@ def clean_drop(dt):
 def normalise_boolean(dt):
     for column in dt.columns:
         unique_vals = []
-
         if not check_is_int(dt[column].iloc[0]):#check if first value is not an int
            unique_vals = dt[column].dropna().unique().tolist()
            dt[column] = dt[column].apply(lambda x: unique_vals.index(x)if x in unique_vals else None)
